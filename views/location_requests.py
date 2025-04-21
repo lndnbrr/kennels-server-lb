@@ -24,3 +24,12 @@ def get_single_location (id):
             requested_location = location
 
     return requested_location
+
+
+def create_location(location):
+    """Function creating a single location to append to LOCATIONS list of dictionaries"""
+    max_id = LOCATIONS[-1]["id"]
+    new_id = max_id + 1
+    location["id"] = new_id
+    LOCATIONS.append(location)
+    return location
