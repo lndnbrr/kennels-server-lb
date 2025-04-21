@@ -26,7 +26,7 @@ def get_single_employee(id):
             return requested_employee
 
 def create_employee(employee):
-    """Function creating a employee customer to append to EMPLOYEES list of dictionaries"""
+    """Function creating an employee to append to EMPLOYEES list of dictionaries"""
     max_id = EMPLOYEES[-1]["id"]
     new_id = max_id + 1
     employee["id"] = new_id
