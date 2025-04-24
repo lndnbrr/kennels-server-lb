@@ -3,13 +3,11 @@ LOCATIONS = [
         "id": 1,
         "name": "Nashville North",
         "address": "8422 Johnson Pike",
-        "top_selling_pet": "turtle"
     },
     {
         "id": 2,
         "name": "Nashville South",
         "address": "209 Emory Drive",
-        "top_selling_pet": "rabbit"
     }
 ]
 
