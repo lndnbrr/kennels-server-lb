@@ -1,19 +1,31 @@
 CUSTOMERS = [
     {
         "id": 1,
-        "name": "Ryan Tanay"
+        "name": "Ryan Tanay",
+        "address": "24 Bryant Street Oakland, CA",
+        "email": "RyTry@yahoo.com",
+        "password": "pintolenTlzz20fo"
     },
     {
         "id": 2,
         "name": "Tyler Braxwort"
+        "address": "314 Pi Dr Hell, MI",
+        "email": "TBrax@yahoo.com",
+        "password": "Ih8M@H!!!"
     },
     {
         "id": 3,
         "name": "Lucy Jenkins"
+        "address": "2034 Smoky Ln Nashville, TN",
+        "email": "oljenkins@hotmail.com",
+        "password": "LEROYYYYYJENKINSSSSS"
     },
     {
         "id": 4,
         "name": "Richard Scott"
+        "address": "13 Office Rd Scranton, PA",
+        "email": "rickovermike@gmail.com",
+        "password": "&dundEwinner1994!"
     }
 ]
 

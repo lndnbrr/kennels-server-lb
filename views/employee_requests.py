@@ -2,17 +2,20 @@ EMPLOYEES = [
     {
         "id": 1,
         "name": "Jenna Solis",
-        "years_employed": 4
+        "years_employed": 4,
+        "location_id": 1
     },
     {
         "id": 2,
         "name": "Jacob Whinehouse",
-        "years_employed": 2
+        "years_employed": 2,
+        "location_id": 2
     },
     {
         "id": 3,
         "name": "Steve Combs",
-        "years_employed": 1
+        "years_employed": 1,
+        "location_id": 1
     }
 ]
 

@@ -5,4 +5,3 @@ class Location:
         self.id = id
         self.name = name
         self.address = address
-        self.top_selling_pet = top_selling_pet
