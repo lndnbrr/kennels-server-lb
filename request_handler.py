@@ -83,26 +83,30 @@ class HandleRequests(BaseHTTPRequestHandler):
 
             else:
                 response = get_all_animals()
+            self.wfile.write(json.dumps(response).encode())
 
         if resource == "locations":
             if id is not None:
                 response = get_single_location(id)
             else:
                 response = get_all_locations()
+            self.wfile.write(json.dumps(response).encode())
 
         if resource == "employees":
             if id is not None:
                 response = get_single_employee(id)
             else:
                 response = get_all_employees()
+            self.wfile.write(json.dumps(response).encode())
 
         if resource == "customers":
             if id is not None:
                 response = get_single_customer(id)
             else:
                 response = get_all_customers()
+            self.wfile.write(json.dumps(response).encode())
 
-        self.wfile.write(json.dumps(response).encode())
+        # self.wfile.write(json.dumps(response).encode())
 
     # Here's a method on the class that overrides the parent's method.
     # It handles any POST request.

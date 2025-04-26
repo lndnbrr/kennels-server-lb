@@ -1,3 +1,8 @@
+import json
+import sqlite3
+from models import Employee
+
+
 EMPLOYEES = [
     {
         "id": 1,
@@ -19,17 +24,62 @@ EMPLOYEES = [
     }
 ]
 
+
 def get_all_employees():
-    """Function returing EMPLOYEES list of dictionaries"""
-    return EMPLOYEES
+    '''Function that connects to database, performs an SQL query, 
+    creates employee instances, appends new instances to new employees 
+    list of dictionaries, returns new employees list when called'''
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+
+        conn.row_factory = sqlite3.Row
+        empl_cursor = conn.cursor()
+
+        empl_cursor.execute("""
+        SELECT 
+            e.id,
+            e.name,
+            e.years_employed,
+            e.location_id
+        FROM employee e
+        """)
+
+        employees = []
+
+        dataset = empl_cursor.fetchall()
+
+        for row in dataset:
+            employee = Employee(row['id'], row['name'],
+                                row['years_employed'], row['location_id'])
+
+            employees.append(employee.__dict__)
+
+    return employees
+
 
 def get_single_employee(id):
-    """Function returing a single employee from the EMPLOYEES list of dictionaries"""
-    requested_employee = None
-    for employee in EMPLOYEES:
-        if employee["id"] == id:
-            requested_employee = employee
-            return requested_employee
+    '''Function that connects to database, performs an SQL query based on 
+    matching id, creates an employee instance for that employee and returns that new 
+    instance when called with a specific id'''
+
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+
+        conn.row_factory = sqlite3.Row
+        emp_cursor = conn.cursor()
+        emp_cursor.execute("""
+        SELECT
+            e.id,
+            e.name,
+            e.years_employed,
+            e.location_id
+        FROM employee e
+        WHERE e.id=?
+        """,(id, ))
+
+        data = emp_cursor.fetchone()
+        employee = Employee(data['id'], data['name'], data['years_employed'], data['location_id'])
+
+    return employee.__dict__
+
 
 def create_employee(employee):
     """Function creating an employee to append to EMPLOYEES list of dictionaries"""

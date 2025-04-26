@@ -1,3 +1,7 @@
+import json
+import sqlite3
+from models import Location
+
 LOCATIONS = [
     {
         "id": 1,
@@ -11,19 +15,54 @@ LOCATIONS = [
     }
 ]
 
+
 def get_all_locations ():
-    """Function returing the LOCATIONS list of dictionaries"""
-    return LOCATIONS
+    '''Function that connects to database, performs an SQL query, 
+    creates location instances, appends new instances to new locations 
+    list of dictionaries, returns new locations list when called'''
+    with sqlite3.connect("./kennel.sqlite3") as conn:
 
-def get_single_location (id):
-    """Function returing a single location from the LOCATIONS list of dictionaries"""
-    requested_location = None
+        conn.row_factory = sqlite3.Row
+        loc_cursor = conn.cursor()
+        loc_cursor.execute("""
+        SELECT
+            l.id,
+            l.name,
+            l.address
+        FROM location l
+        """)
 
-    for location in LOCATIONS:
-        if location["id"] == id:
-            requested_location = location
+        locations = []
+        dataset = loc_cursor.fetchall()
+        for row in dataset:
+            location = Location(row['id'], row['name'], row['address'])
+            locations.append(location.__dict__)
 
-    return requested_location
+    return locations
+
+
+def get_single_location(id):
+    '''Function that connects to database, performs an SQL query based on 
+    matching id, creates an location instance for that location and returns that new 
+    instance when called with a specific id'''
+
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+
+        conn.row_factory = sqlite3.Row
+        loc_cursor = conn.cursor()
+        loc_cursor.execute("""
+        SELECT
+            l.id,
+            l.name,
+            l.address
+        FROM location l
+        WHERE l.id=?
+        """, (id,))
+
+        data = loc_cursor.fetchone()
+        location = Location(data['id'], data['name'], data['address'])
+
+    return location.__dict__
 
 
 def create_location(location):
