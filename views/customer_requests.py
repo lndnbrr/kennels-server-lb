@@ -1,3 +1,8 @@
+import json
+import sqlite3
+from models import Customer 
+
+
 CUSTOMERS = [
     {
         "id": 1,
@@ -8,41 +13,83 @@ CUSTOMERS = [
     },
     {
         "id": 2,
-        "name": "Tyler Braxwort"
+        "name": "Tyler Braxwort",
         "address": "314 Pi Dr Hell, MI",
         "email": "TBrax@yahoo.com",
         "password": "Ih8M@H!!!"
     },
     {
         "id": 3,
-        "name": "Lucy Jenkins"
+        "name": "Lucy Jenkins",
         "address": "2034 Smoky Ln Nashville, TN",
         "email": "oljenkins@hotmail.com",
         "password": "LEROYYYYYJENKINSSSSS"
     },
     {
         "id": 4,
-        "name": "Richard Scott"
+        "name": "Richard Scott",
         "address": "13 Office Rd Scranton, PA",
         "email": "rickovermike@gmail.com",
         "password": "&dundEwinner1994!"
     }
 ]
 
+
 def get_all_customers():
-    """Function returing CUSTOMERS list of dictionaries"""
-    return CUSTOMERS
+    '''Function that connects to database, performs an SQL query, 
+    creates customer instances, appends new instances to new customers 
+    list of dictionaries, returns new customers list when called'''
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+
+        conn.row_factory = sqlite3.Row
+        cus_cursor = conn.cursor()
+        cus_cursor.execute("""
+        SELECT
+            c.id,
+            c.name,
+            c.address,
+            c.email,
+            c.password
+        FROM customer c
+        """)
+
+        customers = []
+        dataset = cus_cursor.fetchall()
+        for row in dataset:
+            customer = Customer(row['id'], row['name'], row['address'],
+                                row['email'], row['password'])
+            customers.append(customer.__dict__)
+
+    return customers
+
 
 def get_single_customer(id):
-    """Function returing a single customer from the CUSTOMERS list of dictionaries"""
+    '''Function that connects to database, performs an SQL query based on 
+    matching id, creates an customer instance for that customer and returns that new 
+    instance when called with a specific id'''
+    with sqlite3.connect("./kennel.sqlite3") as conn:
 
-    requested_customer = None
+        conn.row_factory = sqlite3.Row
+        cus_cursor = conn.cursor()
 
-    for customer in CUSTOMERS:
-        if customer["id"] == id:
-            requested_customer = customer
+        cus_cursor.execute("""
+        SELECT
+            c.id,
+            c.name,
+            c.address,
+            c.email,
+            c.password
+        FROM customer c
+        WHERE c.id=?
+        """,(id,))
 
-    return requested_customer
+        data = cus_cursor.fetchone()
+
+        customer = Customer(data['id'], data['name'], data['address'],
+                                 data['email'], data['password'])
+
+    return customer.__dict__
+
 
 def create_customer(customer):
     """Function creating a single customer to append to CUSTOMERS list of dictionaries"""
@@ -52,6 +99,7 @@ def create_customer(customer):
     CUSTOMERS.append(customer)
     return customer
 
+
 def delete_customer(id):
     """Function deleting a customer from CUSTOMERS list of dictionaries"""
     customer_index = -1
@@ -60,6 +108,7 @@ def delete_customer(id):
             customer_index = index
         if customer_index >= 0:
             CUSTOMERS.pop(customer_index)
+
 
 def update_customer(id, new_customer):
     """Function updating a customer from CUSTOMERS list of dictionaries"""
