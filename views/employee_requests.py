@@ -103,3 +103,33 @@ def update_employee(id, new_employee):
     for index, employee in enumerate(EMPLOYEES):
         if employee["id"] == id:
             EMPLOYEES[index] = new_employee
+
+def get_employee_by_location(location_id):
+    '''Function that connects to database, performs an SQL query with the 
+    condition that the location_id matches the param location_id, 
+    creates employee instances, appends new instances to new employees 
+    list of dictionaries, returns new employees list when called'''
+    with sqlite3.connect('./kennel.sqlite3') as conn:
+
+        conn.row_factory = sqlite3.Row
+        em_lo_cursor = conn.cursor()
+
+        em_lo_cursor.execute("""
+        SELECT
+            e.id,
+            e.name,
+            e.years_employed,
+            e.location_id
+        FROM employee e
+        WHERE e.location_id = ?
+        """, (location_id,))
+
+        employees = []
+        dataset = em_lo_cursor.fetchall()
+        for row in dataset:
+            employee = Employee(row['id'], row['name'],
+                                row['years_employed'], row['location_id'])
+
+            employees.append(employee.__dict__)
+    return employees
+        
