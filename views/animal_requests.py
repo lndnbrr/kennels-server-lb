@@ -36,12 +36,9 @@ def get_all_animals():
     list of dictionaries, returns new animals list when called'''
     # Open a connection to the database
     with sqlite3.connect("./kennel.sqlite3") as conn:
-
-        # Just use these. It's a Black Box.
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
 
-        # Write the SQL query to get the information you want
         db_cursor.execute("""
         SELECT
             a.id,
@@ -53,25 +50,15 @@ def get_all_animals():
         FROM animal a
         """)
 
-        # Initialize an empty list to hold all animal representations
         animals = []
-
-        # Convert rows of data into a Python list
         dataset = db_cursor.fetchall()
 
-        # Iterate list of data returned from database
         for row in dataset:
-
-            # Create an animal instance from the current row.
-            # Note that the database fields are specified in
-            # exact order of the parameters defined in the
-            # Animal class above.
             animal = Animal(row['id'], row['name'], row['breed'],
                             row['status'], row['location_id'],
                             row['customer_id'])
 
             animals.append(animal.__dict__)
-            # see the notes below for an explanation on this line of code.
 
     return animals
 
@@ -84,8 +71,6 @@ def get_single_animal(id):
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
 
-        # Use a ? parameter to inject a variable's value
-        # into the SQL statement.
         db_cursor.execute("""
         SELECT
             a.id,
@@ -98,10 +83,8 @@ def get_single_animal(id):
         WHERE a.id = ?
         """, ( id, ))
 
-        # Load the single result into memory
         data = db_cursor.fetchone()
 
-        # Create an animal instance from the current row
         animal = Animal(data['id'], data['name'], data['breed'],
                             data['status'], data['location_id'],
                             data['customer_id'])
@@ -128,20 +111,15 @@ def create_animal(animal):
 
 
 def delete_animal(id):
-    """Function deleting a single animal from ANIMALS list of dictionaries"""
-    # Initial -1 value for animal index, in case one isn't found
-    animal_index = -1
+    '''Function that connects to database and performs a DELETE SQL query based on matching id'''
 
-    # Iterate the ANIMALS list, but use enumerate() so that you
-    # can access the index value of each item
-    for index, animal in enumerate(ANIMALS):
-        if animal["id"] == id:
-            # Found the animal. Store the current index.
-            animal_index = index
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+        an_cursor = conn.cursor()
 
-        # If the animal was found, use pop(int) to remove it from list
-        if animal_index >= 0:
-            ANIMALS.pop(animal_index)
+        an_cursor.execute('''
+        DELETE FROM animal
+        WHERE id = ?
+        ''', (id, ))
 
 
 def update_animal(id, new_animal):
