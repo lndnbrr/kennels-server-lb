@@ -99,3 +99,7 @@ SELECT
     l.address
 FROM location l
 WHERE l.id = 1
+
+-- Remove only the employee rows where the `id` field value is 3
+DELETE FROM `Employee`
+WHERE id = 3

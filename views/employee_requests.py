@@ -89,20 +89,25 @@ def create_employee(employee):
     EMPLOYEES.append(employee)
     return employee
 
+
 def delete_employee(id):
     """Function deleting an employee from EMPLOYEES list of dictionaries"""
-    employee_index = -1
-    for index, employee in enumerate(EMPLOYEES):
-        if employee["id"] == id:
-            employee_index = index
-        if employee_index >= 0:
-            EMPLOYEES.pop(employee_index)
+
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+        emp_cursor = conn.cursor()
+
+        emp_cursor.execute('''
+        DELETE FROM employee
+        WHERE id = ?
+        ''', (id, ))
+
 
 def update_employee(id, new_employee):
     """Function updating an employee from EMPLOYEES list of dictionaries"""
     for index, employee in enumerate(EMPLOYEES):
         if employee["id"] == id:
             EMPLOYEES[index] = new_employee
+
 
 def get_employee_by_location(location_id):
     '''Function that connects to database, performs an SQL query with the 
