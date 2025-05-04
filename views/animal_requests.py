@@ -7,24 +7,24 @@ ANIMALS = [
         "id": 1,
         "name": "Snickers",
         "breed": "Dog",
-        "locationId": 1,
-        "customerId": 4,
+        "location_id": 1,
+        "customer_id": 4,
         "status": "Admitted"
     },
     {
         "id": 2,
         "name": "Roman",
         "breed": "Dog",
-        "locationId": 1,
-        "customerId": 2,
+        "location_id": 1,
+        "customer_id": 2,
         "status": "Admitted"
     },
     {
         "id": 3,
         "name": "Blue",
         "breed": "Cat",
-        "locationId": 2,
-        "customerId": 1,
+        "location_id": 2,
+        "customer_id": 1,
         "status": "Admitted"
     }
 ]
@@ -138,8 +138,8 @@ def update_animal(id, new_animal):
                 customer_id = ?
         WHERE id = ?
         """, (new_animal['name'], new_animal['breed'],
-              new_animal['status'], new_animal['locationId'],
-              new_animal['customerId'], id, ))
+              new_animal['status'], new_animal['location_id'],
+              new_animal['customer_id'], id, ))
 
         # Were any rows affected?
         # Did the client send an `id` that exists?
