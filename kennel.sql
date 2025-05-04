@@ -103,3 +103,9 @@ WHERE l.id = 1
 -- Remove only the employee rows where the `id` field value is 3
 DELETE FROM `Employee`
 WHERE id = 3
+
+
+-- Update only the animal rows where the `id` field value is 8
+UPDATE `Animal`
+SET breed = 'Terrier'
+WHERE id = 8

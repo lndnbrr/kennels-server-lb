@@ -31,7 +31,7 @@ ANIMALS = [
 
 
 def get_all_animals():
-    '''Function that connects to database, performs an SQL query, 
+    '''Function that connects to database, performs a SELECT SQL query, 
     creates animal instances, appends new instances to new animals 
     list of dictionaries, returns new animals list when called'''
     # Open a connection to the database
@@ -64,7 +64,7 @@ def get_all_animals():
 
 
 def get_single_animal(id):
-    '''Function that connects to database, performs an SQL query based on 
+    '''Function that connects to database, performs a SELECT SQL query based on 
     matching id, creates an animal instance for that animal and returns that new 
     instance when called with a specific id'''
     with sqlite3.connect("./kennel.sqlite3") as conn:
@@ -123,17 +123,38 @@ def delete_animal(id):
 
 
 def update_animal(id, new_animal):
-    """Function updating a single animal from ANIMALS list of dictionaries"""
-    # Iterate the ANIMALS list, but use enumerate() so that
-    # you can access the index value of each item.
-    for index, animal in enumerate(ANIMALS):
-        if animal["id"] == id:
-            # Found the animal. Update the value.
-            ANIMALS[index] = new_animal
-            break
+    '''Function that connects to database, performs an UPDATE SQL query based on matching id, 
+    grabs changes based on new_animal and replaces the values'''
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        UPDATE Animal
+            SET
+                name = ?,
+                breed = ?,
+                status = ?,
+                location_id = ?,
+                customer_id = ?
+        WHERE id = ?
+        """, (new_animal['name'], new_animal['breed'],
+              new_animal['status'], new_animal['locationId'],
+              new_animal['customerId'], id, ))
+
+        # Were any rows affected?
+        # Did the client send an `id` that exists?
+        rows_affected = db_cursor.rowcount
+
+    # return value of this function
+    if rows_affected == 0:
+        # Forces 404 response by main module
+        return False
+    else:
+        # Forces 204 response by main module
+        return True
 
 def get_animal_by_location(location_id):
-    '''Function that connects to database, performs an SQL query with the 
+    '''Function that connects to database, performs a SELECT SQL query with the 
     condition that the location_id matches the param location_id, 
     creates animal instances, appends new instances to new animals 
     list of dictionaries, returns new animals list when called'''
@@ -164,7 +185,7 @@ def get_animal_by_location(location_id):
     return animals
 
 def get_animals_by_status(status):
-    '''Function that connects to database, performs an SQL query with the 
+    '''Function that connects to database, performs a SELECT SQL query with the 
     condition that the status matches the param status, 
     creates animal instances, appends new instances to new animals 
     list of dictionaries, returns new animals list when called'''

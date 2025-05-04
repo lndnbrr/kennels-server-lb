@@ -17,7 +17,7 @@ LOCATIONS = [
 
 
 def get_all_locations ():
-    '''Function that connects to database, performs an SQL query, 
+    '''Function that connects to database, performs a SELECT SQL query, 
     creates location instances, appends new instances to new locations 
     list of dictionaries, returns new locations list when called'''
     with sqlite3.connect("./kennel.sqlite3") as conn:
@@ -42,7 +42,7 @@ def get_all_locations ():
 
 
 def get_single_location(id):
-    '''Function that connects to database, performs an SQL query based on 
+    '''Function that connects to database, performs a SELECT SQL query based on 
     matching id, creates an location instance for that location and returns that new 
     instance when called with a specific id'''
 
@@ -75,18 +75,33 @@ def create_location(location):
 
 
 def delete_location(id):
-    """Function deleting a single location from the LOCATIONS list of dictionaries"""
-    location_index = -1
-    for index, location in enumerate(LOCATIONS):
-        if location["id"] == id:
-            location_index = index
-        if location_index >= 0:
-            LOCATIONS.pop(location_index)
+    '''Function that connects to database and performs a DELETE SQL query based on matching id'''
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+        del_loc_cursor = conn.cursor()
+
+        del_loc_cursor.execute("""
+        DELETE FROM Location
+        WHERE id = ?
+        """, (id, ))
 
 
-def update_location (id, new_location):
-    """Function updating a single location from the LOCATIONS list of dictionaries"""
-    for index, location in enumerate(LOCATIONS):
-        if location["id"]==id:
-            LOCATIONS[index] = new_location
-        break
+def update_location (id, location_updates):
+    '''Function that connects to database, performs an UPDATE SQL query based on matching id, 
+    grabs changes based on location_updates and replaces the values'''
+    with sqlite3.connect ("./kennel.sqlite3") as conn:
+        new_loc_cursor = conn.cursor()
+
+        new_loc_cursor.execute("""
+        UPDATE Location
+            SET
+                name = ?,
+                address = ?
+        WHERE id = ?
+        """, (location_updates['name'],location_updates['address'], id, ))
+
+        rows_checked = new_loc_cursor.rowcount
+
+    if rows_checked == 0:
+        return False
+    else:
+        return True
