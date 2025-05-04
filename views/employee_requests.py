@@ -26,7 +26,7 @@ EMPLOYEES = [
 
 
 def get_all_employees():
-    '''Function that connects to database, performs an SQL query, 
+    '''Function that connects to database, performs a SELECT SQL query, 
     creates employee instances, appends new instances to new employees 
     list of dictionaries, returns new employees list when called'''
     with sqlite3.connect("./kennel.sqlite3") as conn:
@@ -57,7 +57,7 @@ def get_all_employees():
 
 
 def get_single_employee(id):
-    '''Function that connects to database, performs an SQL query based on 
+    '''Function that connects to database, performs a SELECT SQL query based on 
     matching id, creates an employee instance for that employee and returns that new 
     instance when called with a specific id'''
 
@@ -102,15 +102,32 @@ def delete_employee(id):
         ''', (id, ))
 
 
-def update_employee(id, new_employee):
-    """Function updating an employee from EMPLOYEES list of dictionaries"""
-    for index, employee in enumerate(EMPLOYEES):
-        if employee["id"] == id:
-            EMPLOYEES[index] = new_employee
+def update_employee (id, employee_updates):
+    '''Function that connects to database, performs an UPDATE SQL query based on matching id, 
+    grabs changes based on employee_updates and replaces the values'''
+    with sqlite3.connect ("./kennel.sqlite3") as conn:
+        new_emp_cursor = conn.cursor()
+
+        new_emp_cursor.execute("""
+        UPDATE Employee
+            SET
+                name = ?,
+                years_employed = ?,
+                location_id = ?
+        WHERE id = ?
+        """, (employee_updates['name'], employee_updates['years_employed'],
+              employee_updates['location_id'], id, ))
+
+        rows_affected = new_emp_cursor.rowcount
+
+    if rows_affected == 0:
+        return False
+    else:
+        return True
 
 
 def get_employee_by_location(location_id):
-    '''Function that connects to database, performs an SQL query with the 
+    '''Function that connects to database, performs a SELECT SQL query with the 
     condition that the location_id matches the param location_id, 
     creates employee instances, appends new instances to new employees 
     list of dictionaries, returns new employees list when called'''

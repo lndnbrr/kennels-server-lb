@@ -1,6 +1,6 @@
 import json
 import sqlite3
-from models import Customer 
+from models import Customer
 
 
 CUSTOMERS = [
@@ -36,7 +36,7 @@ CUSTOMERS = [
 
 
 def get_all_customers():
-    '''Function that connects to database, performs an SQL query, 
+    '''Function that connects to database, performs a SELECT SQL query, 
     creates customer instances, appends new instances to new customers 
     list of dictionaries, returns new customers list when called'''
     with sqlite3.connect("./kennel.sqlite3") as conn:
@@ -64,7 +64,7 @@ def get_all_customers():
 
 
 def get_single_customer(id):
-    '''Function that connects to database, performs an SQL query based on 
+    '''Function that connects to database, performs a SELECT SQL query based on 
     matching id, creates an customer instance for that customer and returns that new 
     instance when called with a specific id'''
     with sqlite3.connect("./kennel.sqlite3") as conn:
@@ -101,34 +101,53 @@ def create_customer(customer):
 
 
 def delete_customer(id):
-    """Function deleting a customer from CUSTOMERS list of dictionaries"""
-    customer_index = -1
-    for index, customer in enumerate(CUSTOMERS):
-        if customer["id"] == id:
-            customer_index = index
-        if customer_index >= 0:
-            CUSTOMERS.pop(customer_index)
+    '''Function that connects to database and performs a DELETE SQL query based on matching id'''
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+        del_cus_cursor = conn.cursor()
+
+        del_cus_cursor.execute('''
+        DELETE FROM Customer
+        WHERE id = ?
+        ''', (id, ))
 
 
-def update_customer(id, new_customer):
-    """Function updating a customer from CUSTOMERS list of dictionaries"""
-    for index, customer in enumerate(CUSTOMERS):
-        if customer["id"] == id:
-            CUSTOMERS[index] = new_customer
+def update_customer(id, customer_updates):
+    '''Function that connects to database, performs an UPDATE SQL query based on matching id, 
+    grabs changes based on customer_updates and replaces the values'''
+    with sqlite3.connect ("./kennel.sqlite3") as conn:
+        new_cus_cursor = conn.cursor()
 
+        new_cus_cursor.execute("""
+        UPDATE Customer
+            SET
+                name = ?,
+                address = ?,
+                email = ?,
+                password = ?
+        WHERE id = ?
+        """, (customer_updates['name'],customer_updates['address'],
+              customer_updates['email'],customer_updates['password'], id, ))
 
-# TODO: you will get an error about the address on customer.
-# Look through the customer model and requests to see if you can solve the issue.
+        rows_affected = new_cus_cursor.rowcount
+
+    if rows_affected == 0:
+        return False
+    else:
+        return True
+
 
 def get_customer_by_email(email):
-
+    """Function that connects to database, performs a SELECT SQL query with the 
+    condition that the email matches the param email, 
+    creates customer instances, appends new instances to new customers 
+    list of dictionaries, returns new customers list when called
+    """
     with sqlite3.connect("./kennel.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
 
-        # Write the SQL query to get the information you want
         db_cursor.execute("""
-        select
+        SELECT
             c.id,
             c.name,
             c.address,
@@ -142,7 +161,8 @@ def get_customer_by_email(email):
         dataset = db_cursor.fetchall()
 
         for row in dataset:
-            customer = Customer(row['id'], row['name'], row['address'], row['email'] , row['password'])
+            customer = Customer(row['id'], row['name'], row['address'],
+                                row['email'] , row['password'])
             customers.append(customer.__dict__)
 
     return customers
