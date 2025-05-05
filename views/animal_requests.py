@@ -1,6 +1,6 @@
 import json
 import sqlite3
-from models import Animal
+from models import Animal, Location, Customer
 
 ANIMALS = [
     {
@@ -46,8 +46,18 @@ def get_all_animals():
             a.breed,
             a.status,
             a.location_id,
-            a.customer_id
+            a.customer_id,
+            l.name location_name,
+            l.address location_address,
+            c.name customer,
+            c.address cus_address,
+            c.email,
+            c.password
         FROM animal a
+        JOIN location l
+            ON l.id = a.location_id
+        JOIN customer c
+            on c.id = a.customer_id
         """)
 
         animals = []
@@ -57,6 +67,17 @@ def get_all_animals():
             animal = Animal(row['id'], row['name'], row['breed'],
                             row['status'], row['location_id'],
                             row['customer_id'])
+
+            location = Location(row['id'], row['location_name'],
+                                row['location_address'])
+
+            customer = Customer(row['id'], row['customer'],
+                                row['cus_address'],
+                                row['email'], 
+                                row['password'])
+
+            animal.location = location.__dict__
+            animal.customer = customer.__dict__
 
             animals.append(animal.__dict__)
 

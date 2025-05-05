@@ -6,3 +6,4 @@ class Employee:
         self.name = name
         self.years_employed = years_employed
         self.location_id = location_id
+        self.location = None

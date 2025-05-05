@@ -109,3 +109,60 @@ WHERE id = 3
 UPDATE `Animal`
 SET breed = 'Terrier'
 WHERE id = 8
+
+-- Get all animal rows and show the corresponding location based on matching location_id
+SELECT
+    a.id,
+    a.name,
+    a.breed,
+    a.status,
+    a.location_id,
+    a.customer_id,
+    l.name location_name,
+    l.address location_address
+FROM Animal a
+JOIN Location l
+    ON l.id = a.location_id
+
+-- Get all animal rows and show the corresponding customer based on matching customer_id
+SELECT
+    a.id,
+    a.name,
+    a.breed,
+    a.status,
+    a.location_id,
+    a.customer_id,
+    c.name customer,
+    c.address cus_address,
+    c.email,
+    c.password
+FROM Animal a
+JOIN Customer c
+    ON c.id = a.customer_id
+
+-- Get all employee rows and show the corresponding location based on matching location_id
+SELECT 
+    e.id,
+    e.name,
+    e.years_employed,
+    e.location_id,
+    l.name loc_name,
+    l.address
+FROM employee e
+JOIN location l
+    ON l.id = e.location_id
+
+-- Get all customer rows that have an animal with matching customer_id
+-- and show the location that have a matching location_id of the animal
+-- and order so that we can see the animals owned by customer
+SELECT
+    c.id cus_id,
+    c.name customer,
+    a.name animal,
+    l.name storefront
+FROM Customer c
+JOIN Animal a
+    ON c.id = a.customer_id
+JOIN Location l
+    ON l.id = a.location_id
+ORDER BY c.id
