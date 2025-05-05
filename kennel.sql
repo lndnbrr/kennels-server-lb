@@ -166,3 +166,6 @@ JOIN Animal a
 JOIN Location l
     ON l.id = a.location_id
 ORDER BY c.id
+
+-- check if new Animal datapoint appears after POST request
+SELECT * FROM Animal ORDER BY id DESC;
