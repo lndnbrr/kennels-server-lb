@@ -144,22 +144,6 @@ def create_animal(new_animal):
     return new_animal
 
 
-    # # Get the id value of the last animal in the list
-    # max_id = ANIMALS[-1]["id"]
-
-    # # Add 1 to whatever that number is
-    # new_id = max_id + 1
-
-    # # Add an `id` property to the animal dictionary
-    # animal["id"] = new_id
-
-    # # Add the animal dictionary to the list
-    # ANIMALS.append(animal)
-
-    # # Return the dictionary with `id` property added
-    # return animal
-
-
 def delete_animal(id):
     '''Function that connects to database and performs a DELETE SQL query based on matching id'''
 
